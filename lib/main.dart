@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/common/theme/dark_theme.dart';
 import 'package:whatsapp_clone/common/theme/light_theme.dart';
-import 'package:whatsapp_clone/feature/welcome/pages/welcome_page.dart';
+import 'package:whatsapp_clone/feature/auth/pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
       title: 'WhatsApp Me',
       theme: lightTheme(),
       darkTheme: darkTheme(),
-      themeMode: ThemeMode.light,
-      home: const WelcomePage(),
+      themeMode: ThemeMode.dark,
+      home: const LoginPage(),
     );
   }
 }
