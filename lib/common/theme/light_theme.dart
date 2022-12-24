@@ -6,17 +6,28 @@ ThemeData lightTheme() {
   final ThemeData base = ThemeData.light();
 
   return base.copyWith(
-      backgroundColor: Coloors.backgroundLight,
-      scaffoldBackgroundColor: Coloors.backgroundLight,
-      extensions: [
-        CustomThemeExtension.lightMode,
-      ],
-      elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
+    backgroundColor: Coloors.backgroundLight,
+    scaffoldBackgroundColor: Coloors.backgroundLight,
+    extensions: [
+      CustomThemeExtension.lightMode,
+    ],
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
         primary: Coloors.greenLight,
         onPrimary: Coloors.backgroundLight,
         splashFactory: NoSplash.splashFactory,
         shadowColor: Colors.transparent,
         elevation: 0,
-      )));
+      ),
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Coloors.backgroundLight,
+      modalBackgroundColor: Coloors.backgroundLight,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+    ),
+  );
 }

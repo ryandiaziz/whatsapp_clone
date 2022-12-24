@@ -14,11 +14,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'WhatsApp Me',
-        theme: lightTheme(),
-        darkTheme: darkTheme(),
-        themeMode: ThemeMode.light,
-        home: const WelcomePage());
+      debugShowCheckedModeBanner: false,
+      title: 'WhatsApp Me',
+      theme: lightTheme(),
+      darkTheme: darkTheme(),
+      themeMode: ThemeMode.light,
+      home: const WelcomePage(),
+    );
   }
 }
