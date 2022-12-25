@@ -23,7 +23,10 @@ class _LoginPageState extends State<LoginPage> {
     final phone = phoneNumberController.text;
     final name = countryNameController.text;
 
-    if (phone.length < 9) {
+    if (phone.isEmpty) {
+      return showAlertDialog(
+          context: context, message: 'Please enter your phone number.');
+    } else if (phone.length < 9) {
       return showAlertDialog(
           context: context,
           message:
