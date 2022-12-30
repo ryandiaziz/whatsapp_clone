@@ -4,6 +4,7 @@ import 'package:whatsapp_clone/common/utils/coloors.dart';
 import 'package:whatsapp_clone/common/widgets/custom_elevated_button.dart';
 import 'package:whatsapp_clone/common/widgets/custom_icon_button.dart';
 import 'package:whatsapp_clone/common/widgets/short_h_bar.dart';
+import 'package:whatsapp_clone/feature/auth/pages/image_picker_page.dart';
 import 'package:whatsapp_clone/feature/auth/widgets/custom_text_field.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -51,7 +52,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 ),
                 const SizedBox(width: 15),
                 imagePickerIcon(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ImagePickerPage(),
+                      ),
+                    );
+                  },
                   icon: Icons.photo_camera_back_rounded,
                   text: 'Gallery',
                 ),
