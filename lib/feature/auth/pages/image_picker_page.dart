@@ -14,8 +14,18 @@ class ImagePickerPage extends StatefulWidget {
 
 class _ImagePickerPageState extends State<ImagePickerPage> {
   List<Widget> imageList = [];
+  int currentPage = 0;
+  int? lastPage;
+
+  handleScrollEvent(ScrollNotification scroll) {
+    if (scroll.metrics.pixels / scroll.metrics.maxScrollExtent <= .33) return;
+    if (currentPage == lastPage) return;
+    fetchAllImages();
+  }
 
   fetchAllImages() async {
+    lastPage = currentPage;
+
     final permission = await PhotoManager.requestPermissionExtend();
     if (!permission.isAuth) return PhotoManager.openSetting();
 
@@ -25,7 +35,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
     );
 
     List<AssetEntity> photos = await albums[0].getAssetListPaged(
-      page: 0,
+      page: currentPage,
       size: 24,
     );
 
@@ -34,12 +44,29 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
     for (var asset in photos) {
       temp.add(
         FutureBuilder(
+          future: asset.thumbnailDataWithSize(
+            const ThumbnailSize(200, 200),
+          ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: MemoryImage(snapshot.data as Uint8List),
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: InkWell(
+                  onTap: () => Navigator.pop(context, snapshot.data),
+                  borderRadius: BorderRadius.circular(5),
+                  splashFactory: NoSplash.splashFactory,
+                  child: Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: context.theme.greyColor!.withOpacity(0.4),
+                        width: 1,
+                      ),
+                      image: DecorationImage(
+                        image: MemoryImage(snapshot.data as Uint8List),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
               );
@@ -51,6 +78,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
     }
     setState(() {
       imageList.addAll(temp);
+      currentPage++;
     });
   }
 
@@ -64,7 +92,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        // elevation: 0,
         backgroundColor: Theme.of(context).backgroundColor,
         title: Text(
           'WhastApp',
@@ -81,12 +109,23 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
           ),
         ],
       ),
-      body: GridView.builder(
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-        itemBuilder: (_, index) {
-          return imageList[index];
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(5),
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scroll) {
+            handleScrollEvent(scroll);
+            return true;
+          },
+          child: GridView.builder(
+            itemCount: imageList.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+            itemBuilder: (_, index) {
+              return imageList[index];
+            },
+          ),
+        ),
       ),
     );
   }

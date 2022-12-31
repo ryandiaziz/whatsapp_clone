@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:whatsapp_clone/common/extension/custom_theme_extension.dart';
+import 'package:whatsapp_clone/common/helper/show_alert_dialog.dart';
 import 'package:whatsapp_clone/common/utils/coloors.dart';
 import 'package:whatsapp_clone/common/widgets/custom_elevated_button.dart';
 import 'package:whatsapp_clone/common/widgets/custom_icon_button.dart';
@@ -15,6 +20,9 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
+  File? imageCamera;
+  Uint8List? imageGalery;
+
   imagePickerTypeBottomSheet() {
     return showModalBottomSheet(
       context: context,
@@ -46,19 +54,24 @@ class _UserInfoPageState extends State<UserInfoPage> {
               children: [
                 const SizedBox(width: 20),
                 imagePickerIcon(
-                  onTap: () {},
+                  onTap: pickImageFromCamera,
                   icon: Icons.camera_alt_rounded,
                   text: 'Camera',
                 ),
                 const SizedBox(width: 15),
                 imagePickerIcon(
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
-                    Navigator.of(context).push(
+                    final image = await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const ImagePickerPage(),
                       ),
                     );
+                    if (image == null) return;
+                    setState(() {
+                      imageGalery = image;
+                      imageCamera = null;
+                    });
                   },
                   icon: Icons.photo_camera_back_rounded,
                   text: 'Gallery',
@@ -70,6 +83,19 @@ class _UserInfoPageState extends State<UserInfoPage> {
         );
       },
     );
+  }
+
+  pickImageFromCamera() async {
+    Navigator.of(context).pop();
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      setState(() {
+        imageCamera = File(image!.path);
+        imageGalery = null;
+      });
+    } catch (e) {
+      showAlertDialog(context: context, message: e.toString());
+    }
   }
 
   imagePickerIcon({
@@ -135,13 +161,28 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: context.theme.photoIconBgColor,
+                  border: Border.all(
+                    color: imageCamera == null && imageGalery == null
+                        ? Colors.transparent
+                        : context.theme.greyColor!.withOpacity(0.4),
+                  ),
+                  image: imageCamera != null && imageGalery != null
+                      ? DecorationImage(
+                          fit: BoxFit.cover,
+                          image: imageGalery != null
+                              ? MemoryImage(imageGalery!) as ImageProvider
+                              : FileImage(imageCamera!),
+                        )
+                      : null,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 3, right: 3),
                   child: Icon(
                     Icons.add_a_photo_rounded,
                     size: 48,
-                    color: context.theme.photoIconColor,
+                    color: imageCamera == null && imageGalery == null
+                        ? context.theme.photoIconColor
+                        : Colors.transparent,
                   ),
                 ),
               ),
