@@ -164,9 +164,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   border: Border.all(
                     color: imageCamera == null && imageGalery == null
                         ? Colors.transparent
-                        : context.theme.greyColor!.withOpacity(0.4),
+                        : context.theme.greyColor!.withOpacity(.4),
                   ),
-                  image: imageCamera != null && imageGalery != null
+                  image: imageCamera != null || imageGalery != null
                       ? DecorationImage(
                           fit: BoxFit.cover,
                           image: imageGalery != null
