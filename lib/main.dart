@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_clone/common/theme/dark_theme.dart';
 import 'package:whatsapp_clone/common/theme/light_theme.dart';
+import 'package:whatsapp_clone/feature/welcome/pages/welcome_page.dart';
 
 import 'common/routes/routes.dart';
-import 'feature/auth/pages/user_info_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: lightTheme(),
       darkTheme: darkTheme(),
       themeMode: ThemeMode.dark,
-      home: const UserInfoPage(),
+      home: const WelcomePage(),
       onGenerateRoute: Routes.onGenerateRoute,
     );
   }

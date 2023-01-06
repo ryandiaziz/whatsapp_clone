@@ -55,6 +55,11 @@ class AuthRepository {
       await firestore.collection('user').doc(uid).set(user.toMap());
 
       if (!mounted) return;
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.home,
+        (route) => false,
+      );
     } catch (e) {
       showAlertDialog(context: context, message: e.toString());
     }

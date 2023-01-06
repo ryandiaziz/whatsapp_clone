@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whatsapp_clone/common/extension/custom_theme_extension.dart';
 import 'package:whatsapp_clone/common/helper/show_alert_dialog.dart';
@@ -9,19 +10,41 @@ import 'package:whatsapp_clone/common/utils/coloors.dart';
 import 'package:whatsapp_clone/common/widgets/custom_elevated_button.dart';
 import 'package:whatsapp_clone/common/widgets/custom_icon_button.dart';
 import 'package:whatsapp_clone/common/widgets/short_h_bar.dart';
+import 'package:whatsapp_clone/feature/auth/controller/auth_controller.dart';
 import 'package:whatsapp_clone/feature/auth/pages/image_picker_page.dart';
 import 'package:whatsapp_clone/feature/auth/widgets/custom_text_field.dart';
 
-class UserInfoPage extends StatefulWidget {
+class UserInfoPage extends ConsumerStatefulWidget {
   const UserInfoPage({Key? key}) : super(key: key);
 
   @override
-  State<UserInfoPage> createState() => _UserInfoPageState();
+  ConsumerState<UserInfoPage> createState() => _UserInfoPageState();
 }
 
-class _UserInfoPageState extends State<UserInfoPage> {
+class _UserInfoPageState extends ConsumerState<UserInfoPage> {
   File? imageCamera;
-  Uint8List? imageGalery;
+  Uint8List? imageGallery;
+
+  late TextEditingController usernameController;
+
+  saveUserDataToFirebase() {
+    String username = usernameController.text;
+
+    if (username.isEmpty) {
+      return showAlertDialog(
+          context: context, message: 'Please provide a username');
+    } else if (username.length < 3 || username.length > 20) {
+      return showAlertDialog(
+          context: context,
+          message: 'A username length should be between 3-20');
+    }
+    ref.read(authControllerProvider).saveUserInfoToFirestrore(
+          username: username,
+          profileImage: imageCamera ?? imageGallery ?? '',
+          context: context,
+          mounted: mounted,
+        );
+  }
 
   imagePickerTypeBottomSheet() {
     return showModalBottomSheet(
@@ -69,7 +92,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     );
                     if (image == null) return;
                     setState(() {
-                      imageGalery = image;
+                      imageGallery = image;
                       imageCamera = null;
                     });
                   },
@@ -91,7 +114,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       final image = await ImagePicker().pickImage(source: ImageSource.camera);
       setState(() {
         imageCamera = File(image!.path);
-        imageGalery = null;
+        imageGallery = null;
       });
     } catch (e) {
       showAlertDialog(context: context, message: e.toString());
@@ -124,6 +147,18 @@ class _UserInfoPageState extends State<UserInfoPage> {
         ),
       ],
     );
+  }
+
+  @override
+  void initState() {
+    usernameController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -162,15 +197,15 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   shape: BoxShape.circle,
                   color: context.theme.photoIconBgColor,
                   border: Border.all(
-                    color: imageCamera == null && imageGalery == null
+                    color: imageCamera == null && imageGallery == null
                         ? Colors.transparent
                         : context.theme.greyColor!.withOpacity(.4),
                   ),
-                  image: imageCamera != null || imageGalery != null
+                  image: imageCamera != null || imageGallery != null
                       ? DecorationImage(
                           fit: BoxFit.cover,
-                          image: imageGalery != null
-                              ? MemoryImage(imageGalery!) as ImageProvider
+                          image: imageGallery != null
+                              ? MemoryImage(imageGallery!) as ImageProvider
                               : FileImage(imageCamera!),
                         )
                       : null,
@@ -180,7 +215,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: Icon(
                     Icons.add_a_photo_rounded,
                     size: 48,
-                    color: imageCamera == null && imageGalery == null
+                    color: imageCamera == null && imageGallery == null
                         ? context.theme.photoIconColor
                         : Colors.transparent,
                   ),
@@ -193,8 +228,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
             Row(
               children: [
                 const SizedBox(width: 10),
-                const Expanded(
+                Expanded(
                   child: CustomTextField(
+                    controller: usernameController,
                     hintText: 'Type your name here',
                     textAlign: TextAlign.left,
                     autoFocus: true,
@@ -212,7 +248,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: CustomElevatedButton(
-        onPressed: () {},
+        onPressed: saveUserDataToFirebase,
         text: 'NEXT',
         buttonWidth: 90,
       ),
