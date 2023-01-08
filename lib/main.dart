@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:whatsapp_clone/common/extension/custom_theme_extension.dart';
 import 'package:whatsapp_clone/common/theme/dark_theme.dart';
 import 'package:whatsapp_clone/common/theme/light_theme.dart';
 import 'package:whatsapp_clone/feature/auth/controller/auth_controller.dart';
@@ -48,11 +47,11 @@ class MyApp extends ConsumerWidget {
           );
         },
         loading: () {
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: Icon(
                 Icons.whatsapp,
-                color: context.theme.authAppbarColor,
+                size: 30,
               ),
             ),
           );
