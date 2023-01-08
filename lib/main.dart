@@ -33,7 +33,7 @@ class MyApp extends ConsumerWidget {
       title: 'WhatsApp Me',
       theme: lightTheme(),
       darkTheme: darkTheme(),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       home: ref.watch(userInfoAuthProvider).when(
         data: (user) {
           if (user == null) return const WelcomePage();
