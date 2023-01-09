@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/common/widgets/custom_icon_button.dart';
+import 'package:whatsapp_clone/feature/home/pages/call_home_page.dart';
+import 'package:whatsapp_clone/feature/home/pages/chat_home_page.dart';
+import 'package:whatsapp_clone/feature/home/pages/status_home_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -37,6 +40,13 @@ class HomePage extends StatelessWidget {
               )
             ],
           ),
+        ),
+        body: const TabBarView(
+          children: [
+            ChatHomePage(),
+            StatusHomePage(),
+            CalltHomePage(),
+          ],
         ),
       ),
     );
