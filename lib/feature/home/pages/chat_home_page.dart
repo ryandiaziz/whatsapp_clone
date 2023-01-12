@@ -15,7 +15,7 @@ class ChatHomePage extends StatelessWidget {
         child: Text('Chat Home Page'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => navigateToContactPage,
+        onPressed: () => navigateToContactPage(context),
         child: const Icon(
           Icons.chat,
         ),

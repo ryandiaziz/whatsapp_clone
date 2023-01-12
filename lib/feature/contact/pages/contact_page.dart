@@ -18,11 +18,11 @@ class ContactPage extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(
+            SizedBox(
               height: 3,
             ),
             Text(
-              '5 contact',
+              '5 contacts',
               style: TextStyle(fontSize: 12),
             ),
           ],
