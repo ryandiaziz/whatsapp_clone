@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_clone/common/theme/dark_theme.dart';
 import 'package:whatsapp_clone/common/theme/light_theme.dart';
 import 'package:whatsapp_clone/feature/auth/controller/auth_controller.dart';
-import 'package:whatsapp_clone/feature/contact/pages/contact_page.dart';
 import 'package:whatsapp_clone/feature/home/pages/home_page.dart';
 import 'package:whatsapp_clone/feature/welcome/pages/welcome_page.dart';
 
